@@ -10,6 +10,7 @@ Extract `Remotea.zip` on each PC and double-click **Install.cmd**. On first inst
 
 - copies Remotea to `%LOCALAPPDATA%\Programs\Remotea` (no admin needed; an existing `remotea.json` is kept on reinstall/upgrade)
 - adds Start Menu entries **Remotea**, **Remotea Settings** and **Uninstall Remotea**
+- registers Remotea under **Settings > Apps > Installed apps** (and Control Panel > Programs and Features), so it can be uninstalled from there
 - starts Remotea minimized at every logon (`Install.cmd -NoAutostart` to skip)
 - on a receiver, adds the inbound firewall rule (one admin prompt)
 - starts it right away

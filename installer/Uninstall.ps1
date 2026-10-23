@@ -1,5 +1,5 @@
 <#
-  Removes Remotea for the current user: stops it, deletes shortcuts, the firewall rule and the install folder
+  Removes Remotea for the current user: stops it, deletes shortcuts, the Installed apps entry, the firewall rule and the install folder
   (including remotea.json).
 #>
 $ErrorActionPreference = 'Stop'
@@ -17,5 +17,6 @@ if (Get-NetFirewallRule -DisplayName 'Remotea' -ErrorAction SilentlyContinue) {
     Start-Process netsh -Verb RunAs -Wait -WindowStyle Hidden -ArgumentList 'advfirewall firewall delete rule name=Remotea'
 }
 
+Remove-Item 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Remotea' -Recurse -ErrorAction SilentlyContinue
 Remove-Item $dest -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host 'Remotea uninstalled.'

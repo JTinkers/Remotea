@@ -1,7 +1,8 @@
 <#
   Installs Remotea for the current user:
   - copies it to %LOCALAPPDATA%\Programs\Remotea (an existing remotea.json there is kept)
-  - adds Start Menu shortcuts ("Remotea" and "Remotea Settings")
+  - adds Start Menu shortcuts ("Remotea", "Remotea Settings" and "Uninstall Remotea")
+  - registers it under Installed apps so it can be uninstalled from Settings
   - starts it at logon unless -NoAutostart
   - on a receiver, adds the inbound firewall rule (asks for admin once)
 #>
@@ -49,6 +50,29 @@ if ($NoAutostart) {
 } else {
     New-Shortcut $startupLink $exe
 }
+
+# Per-user entry under Settings > Apps > Installed apps (and Control Panel > Programs and Features).
+$uninstallKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Remotea'
+$version = (Get-Item $exe).VersionInfo.ProductVersion -replace '\+.*$', ''
+$sizeKb = [int]((Get-ChildItem $dest -File | Measure-Object Length -Sum).Sum / 1KB)
+New-Item $uninstallKey -Force | Out-Null
+$entry = @{
+    DisplayName     = 'Remotea'
+    DisplayVersion  = $version
+    Publisher       = 'JTinkers'
+    DisplayIcon     = $exe
+    InstallLocation = $dest
+    UninstallString = "`"$(Join-Path $dest 'Uninstall.cmd')`""
+    URLInfoAbout    = 'https://github.com/JTinkers/Remotea'
+}
+foreach ($name in $entry.Keys) {
+    New-ItemProperty $uninstallKey -Name $name -Value $entry[$name] -PropertyType String -Force | Out-Null
+}
+foreach ($name in 'NoModify', 'NoRepair') {
+    New-ItemProperty $uninstallKey -Name $name -Value 1 -PropertyType DWord -Force | Out-Null
+}
+New-ItemProperty $uninstallKey -Name EstimatedSize -Value $sizeKb -PropertyType DWord -Force | Out-Null
+New-ItemProperty $uninstallKey -Name InstallDate -Value (Get-Date -Format 'yyyyMMdd') -PropertyType String -Force | Out-Null
 
 $settings = Read-Config
 if ($settings.role -eq 'receiver' -and -not (Get-NetFirewallRule -DisplayName 'Remotea' -ErrorAction SilentlyContinue)) {

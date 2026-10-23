@@ -1,0 +1,13 @@
+{
+  // "controller" on the PC whose mouse/keyboard you use, "receiver" on the other one.
+  "role": "receiver",
+  // Receiver's LAN address (controller only).
+  "host": "192.168.31.20",
+  "port": 13333,
+  // Controller screen edge that leads to the receiver: left, right, top or bottom.
+  "edge": "right",
+  // Must be identical on both PCs. Replace before first run.
+  "secret": "change-me",
+  // Forces control back to the controller.
+  "releaseHotkey": "Ctrl+Alt+F12"
+}

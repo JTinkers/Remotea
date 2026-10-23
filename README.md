@@ -18,7 +18,7 @@ To upgrade, run the new `Install.cmd` again. After editing settings, restart Rem
 
 ## Build
 
-Requires the .NET 8 SDK.
+The app targets .NET 8. Building the `Remotea.slnx` solution needs .NET SDK 9.0.200 or later.
 
 ```bash
 dotnet build
@@ -26,11 +26,21 @@ dotnet test
 powershell -ExecutionPolicy Bypass -File installer/Package.ps1
 ```
 
-`Package.ps1` produces `share/Remotea.zip` with the self-contained exe and the installer.
+`Package.ps1` produces `share/Remotea.zip` with the self-contained single-file exe, the installer scripts and this README.
+
+```
+src/Remotea/          the app
+  Controller/         captures local input and forwards it while the cursor is on the receiver
+  Receiver/           injects the received input
+  Protocol/           message framing and the encrypted channel
+  Native/             Win32 interop
+tests/Remotea.Tests/  xUnit tests
+installer/            Install/Uninstall scripts and Package.ps1
+```
 
 ## Configure
 
-Edit `remotea.json` next to the exe on each PC. `secret` must be the same on both.
+Edit `remotea.json` next to the exe on each PC. `secret` must be the same on both, and Remotea refuses to start with the placeholder `change-me`.
 
 ```jsonc
 {
@@ -43,7 +53,7 @@ Edit `remotea.json` next to the exe on each PC. `secret` must be the same on bot
 }
 ```
 
-Any setting can be overridden on the command line (`--host`, `--port`, `--edge`, `--secret`, `--hotkey`, `--config`, `--verbose`), and the secret can come from the `REMOTEA_SECRET` environment variable instead.
+Any setting can be overridden on the command line (`controller`/`receiver` for the role, `--host`, `--port`, `--edge`, `--secret`, `--hotkey`, `--config`, `--verbose`), and the secret can come from the `REMOTEA_SECRET` environment variable instead.
 
 ## Run manually (without installing)
 

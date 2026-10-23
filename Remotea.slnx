@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Remotea/Remotea.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Remotea.Tests/Remotea.Tests.csproj" />
+  </Folder>
+</Solution>
